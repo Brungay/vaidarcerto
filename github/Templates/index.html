@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos - Bagueteria</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        header {
+            background-image: linear-gradient(to right, #563d7c, #c6538c); /* Da cor roxa para o rosa */
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .logo img {
+            width: 120px; /* Ajuste para tela de smartphone */
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            font-size: 24px; /* Tamanho do título ajustado para desktop */
+            margin: 0 0 20px; /* Espaçamento abaixo do título */
+        }
+
+        nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: none; /* Oculto por padrão; será mostrado no desktop ou quando ativo em mobile */
+    width: 100%;
+    background-image: linear-gradient(to right, #563d7c, #c6538c, ##FFDAB9); /* Da cor roxa para o amarelo */
+    border-radius: 10px; /* Adiciona bordas arredondadas */
+}
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px; /* Ajuste de tamanho de fonte para legibilidade */
+            padding: 10px;
+            display: block;
+            border-radius: 50px;
+            transition: background-color 0.3s;
+        }
+
+        .menu-btn {
+            display: block; /* Sempre visível para ativar o menu em mobile */
+            font-size: 30px;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        /* Estilos para telas maiores que 600px */
+        @media (min-width: 600px) {
+            .logo img {
+                width: 200px; /* Tamanho maior da logo para desktop */
+            }
+
+            h1 {
+                font-size: 32px; /* Tamanho maior do título para desktop */
+            }
+
+            nav ul {
+                display: flex; /* Mostra o menu horizontalmente no desktop */
+                justify-content: center;
+                gap: 20px;
+            }
+
+            nav ul li a {
+                font-size: 20px; /* Tamanho da fonte maior para links no desktop */
+            }
+
+            .menu-btn {
+                display: none; /* Oculta o botão de menu no desktop */
+            }
+        }
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 20px;
+            gap: 20px; /* Espaço entre os produtos */
+        }
+        
+        .product {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            width: calc(50% - 40px); /* Inicialmente, dois produtos por linha */
+            text-align: center;
+        }
+        
+        .product img {
+            width: 100%;
+            height: auto;
+            border-radius: 15px 15px 0 0;
+            margin-bottom: 15px;
+        }
+        
+        .product-text {
+            color: #333;
+            font-size: 18px;
+            margin: 0;
+        }
+        
+        /* Ajustes para smartphones */
+        @media (max-width: 600px) {
+            .product {
+                width: calc(100% - 40px); /* Um produto por linha, cobrindo quase toda a lateral */
+            }
+        }
+        
+        /* Estilos para o container de busca */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        /* Estilos para o input de busca */
+        #search-box {
+            border: 2px solid green; /* Bordas verdes */
+            border-radius: 25px; /* Bordas arredondadas */
+            padding: 10px 20px; /* Espaçamento interno para aumentar o input */
+            font-size: 16px; /* Tamanho da fonte */
+            width: 50%; /* Largura do input */
+        }
+        
+        
+        #search-btn i {
+            margin-left: 5px; /* Espaçamento à esquerda do ícone */
+        }
+        
+        /* Inclui a fonte de ícones FontAwesome para o ícone da lupa */
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css');
+        
+        .search-wrapper {
+            display: flex;
+            justify-content: center; /* Centraliza horizontalmente */
+            width: 100%; /* Ocupa toda a largura do container pai */
+            padding: 20px 0; /* Adiciona um pouco de espaço acima e abaixo para estética */
+        }
+        
+        #searchInput {
+            width: 300px; /* Reduz a largura */
+            padding: 10px; /* Espaçamento interno para torná-lo mais alto */
+            border: 4px solid #FFA62B; /* Bordas verdes e grossas */
+            border-radius: 15px; /* Bordas arredondadas */
+            outline: none; /* Remove o contorno ao focar */
+            font-size: 16px; /* Tamanho da fonte dentro do input */
+            box-sizing: border-box; /* Garante que padding e border não aumentem a largura */
+        }
+        
+        #searchInput:focus {
+            border-color: darkGreen; /* Escurece a borda ao focar */
+            box-shadow: 0 0 8px 0 rgba(0, 128, 0, 0.6); /* Sombra ao redor do input quando focado */
+        }
+        
+
+        #drag-target {
+            position: fixed; /* Muda para fixed para posicionar relativamente à viewport */
+            bottom: 15px; /* 20px do fundo da viewport */
+            right: 20px; /* 20px da direita da viewport */
+            z-index: 1000; /* Certifica-se de que está acima de outros elementos */
+            padding: 10px;
+            background-color: lightgrey;
+            border: dashed 2px gray;
+            border-radius: 10px;
+            cursor: grab; /* Cursor de "grab" (agarrar) para indicar que é arrastável */
+            width: 150px; /* Define uma largura */
+            text-align: center;
+        }
+
+
+        /* Estilo para o modal de agendamento */
+#modalAgendamento {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1001; /* Valor maior do que o z-index do #btnAgendamento */
+}
+
+.modal-content {
+    background-color: #ffc107; /* Cor de fundo amarelo */
+    padding: 20px;
+    border-radius: 15px; /* Bordas arredondadas */
+    max-width: 90%; /* Ajuste a largura máxima conforme necessário */
+    max-height: 90vh; /* Ajuste a altura máxima conforme necessário */
+    overflow-y: auto; /* Adicione rolagem vertical se necessário */
+    margin: auto;
+}
+
+/* Estilo para os campos de texto no checklist */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #4CAF50; /* Cor verde para o texto */
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #4CAF50; /* Cor da borda verde */
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #4CAF50; /* Cor do texto verde */
+}
+
+/* Estilo para o botão Enviar para WhatsApp */
+#formAgendamento button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Adicionando emojis ao texto do checklist */
+#formAgendamento h3:before {
+    content: "🐾"; /* Pegada de animal antes dos títulos */
+    margin-right: 10px;
+}
+
+#formAgendamento label:after {
+    content: "📝"; /* Lápis após os rótulos */
+    margin-left: 5px;
+}
+
+
+/* Estilo para os campos de texto no checklist */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #4CAF50; /* Cor verde para o texto */
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #4CAF50; /* Cor da borda verde */
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #4CAF50; /* Cor do texto verde */
+}
+
+/* Estilo para o botão Enviar para WhatsApp */
+#formAgendamento button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Adicionando emojis ao texto do checklist */
+#formAgendamento h3:before {
+    content: "🐾"; /* Pegada de animal antes dos títulos */
+    margin-right: 10px;
+}
+
+#formAgendamento label:after {
+    content: "📝"; /* Lápis após os rótulos */
+    margin-left: 5px;
+}
+
+
+    
+        label,
+        input,
+        select,
+        button {
+            display: block;
+            margin: 10px 0;
+            color: #4CAF50;
+        }
+    
+        button {
+            background-color: #563d7c; /* Cor de fundo */
+            color: white; /* Cor do texto */
+            padding: 10px 15px; /* Espaçamento interno */
+            font-size: 1em; /* Tamanho da fonte */
+            border: none; /* Sem bordas */
+            border-radius: 10px; /* Bordas arredondadas */
+            cursor: pointer; /* Muda o cursor para indicar que é clicável */
+            margin: 100px; /* Remove as margens padrão */
+            margin-top: 0px;
+            margin-bottom: 0px;
+            display: flex; /* Usa Flexbox para o layout */
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center; /* Centraliza verticalmente */
+        }
+
+
+        #fecharModalAgendamento {
+            top: 10px;
+            right: 0px;
+            left: 1000px;
+            background-color: #FF4500; /* Cor laranja mais forte */
+            color: white;
+            border: none;
+            font-size: 1.5em;
+            padding: 5px 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-left: 310px;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logooesley.jpg" alt="Logo da Bagueteria" />
+        </div>
+        <h1></h1>
+        <div class="menu-btn" onclick="toggleMenu()">☰</div>
+        <nav>
+            <ul id="menu">
+                <li><a href="index.html">Produtos</a></li>
+                <li><a href="loja-fisica.html">Loja Física</a></li>
+                <li><a href="quem-somos.html">Quem Somos Nós</a></li>
+                <li><a href="contatos.html">Contatos</a></li>
+            </ul>
+        </nav>
+        <button id="btnAgendamento">Faça seu pedido por aqui! 😃</button>
+    </header>
+    <main>
+
+                 <!-- Modal de Agendamento -->
+<div id="modalAgendamento">
+    <div class="modal-content">
+        <button id="fecharModalAgendamento" onclick="fecharModalAgendamento()">X</button>
+        <h2>Escolha seu pedido!</h2>
+        <form id="formAgendamento">
+            
+            <!-- Tipo de Serviço -->
+            <label for="tipoServico">Qual produto deseja?</label>
+            <select id="tipoServico" required>
+                <option value="creche">Açaí</option>
+                <option value="alojamento">Sorvete</option>
+                <option value="passeios">Bebida</option>
+            </select>
+
+            <!-- Informações do Pet -->
+            <h3>Qual o código do produto?</h3>
+            <div class="form-group">
+                <label for="nomePet">Qual o código do produto?</label>
+                <input type="text" id="nomePet" required>
+            </div>
+
+            <div class="form-group">
+                <label for="idadePet">Acompanhamentos gratuitos que deseja caso seja opcional</label>
+                <input type="text" id="idadePet" required>
+            </div>
+
+            <div class="form-group">
+                <label for="racaPet">Adicionais pagos que deseja</label>
+                <input type="text" id="racaPet" required>
+            </div>
+
+            <div class="form-group">
+                <label for="pesoPet">CPF do Tutor do Pet:</label>
+                <input type="text" id="pesoPet" required>
+            </div>
+
+            <div class="form-group">
+                <label for="sexoPet">Sexo:</label>
+                <select id="sexoPet" required>
+                    <option value="macho">Macho</option>
+                    <option value="femea">Fêmea</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="necessidadesEspeciais">Necessidades Especiais (se houver):</label>
+                <input type="text" id="necessidadesEspeciais">
+            </div>
+
+            <!-- Alimentação -->
+            <h3>Alimentação:</h3>
+            <div class="form-group">
+                <label for="tipoAlimentacao">Tipo de Alimentação (seco, úmido, caseira):</label>
+                <input type="text" id="tipoAlimentacao" required>
+            </div>
+
+            <div class="form-group">
+                <label for="horariosRefeicoes">Horários das Refeições:</label>
+                <input type="text" id="horariosRefeicoes" required>
+            </div>
+
+            <!-- Instruções Especiais -->
+            <h3>Instruções Especiais:</h3>
+            <div class="form-group">
+                <label for="medicamentos">Medicamentos (se necessário, incluir dosagem e horários):</label>
+                <input type="text" id="medicamentos">
+            </div>
+
+            <div class="form-group">
+                <label for="restricoesAlimentares">Restrições Alimentares:</label>
+                <input type="text" id="restricoesAlimentares">
+            </div>
+
+            <div class="form-group">
+                <label for="comportamentosEspecificos">Comportamentos Específicos:</label>
+                <input type="text" id="comportamentosEspecificos">
+            </div>
+
+            <!-- Contato de Emergência -->
+            <h3>Contato de Emergência:</h3>
+            <div class="form-group">
+                <label for="nomeResponsavel">Nome do Responsável:</label>
+                <input type="text" id="nomeResponsavel" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefoneContato">Telefone de Contato:</label>
+                <input type="text" id="telefoneContato" required>
+            </div>
+
+            <!-- Horários e Datas -->
+            <h3>Horários e Datas:</h3>
+            <div class="form-group">
+                <label for="dataInicio">Data de Início do Serviço:</label>
+                <input type="text" id="dataInicio" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dataTermino">Data de Término (se aplicável):</label>
+                <input type="text" id="dataTermino">
+            </div>
+
+            <div class="form-group">
+                <label for="horariosAtendimento">Horários de Atendimento Específicos:</label>
+                <input type="text" id="horariosAtendimento">
+            </div>
+
+            <!-- Observações Adicionais -->
+            <h3>Observações Adicionais:</h3>
+            <div class="form-group">
+                <label for="observacoes">Outras Informações Relevantes:</label>
+                <textarea id="observacoes"></textarea>
+            </div>
+
+            <!-- Termos e Condições -->
+            <h3>Termos e Condições:</h3>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="termosCondicoes" required>
+                    Li e concordo com os termos e condições do serviço.
+                </label>
+            </div>
+
+            <!-- Botão de Envio -->
+            <button type="button" onclick="enviarParaWhatsApp()">Enviar para WhatsApp</button>
+        </form>
+    </div>
+</div>
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" placeholder="Buscar produtos..." onkeyup="searchProducts()" autocomplete="off">
+        </div>
+
+        <div class="product-container">
+            <div class="product">
+                <img src="acaibis.avif" alt="Açaí Especial">
+                <h3 class="product-text">Açaí de bis</h3>
+                <p class="product-text">Ingredientes: Açaí, bis</p>
+                <h3 class="product-text">Valor R$29,99</h3>
+            </div>
+
+            <div class="product">
+                <img src="acaibis.avif" alt="Açaí Especial">
+                <h3 class="product-text">Açaí de nutella</h3>
+                <p class="product-text">Ingredientes: Açaí, nutella</p>
+                <h3 class="product-text">Valor R$29,99</h3>
+            </div>
+            <!-- Repita <div class="product"> para mais produtos -->
+        </div>
+
+</div>
+    </main>
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("menu");
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
+        }
+
+        // Função para buscar produtos
+        function searchProducts() {
+            var input, filter, products, productText, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            products = document.getElementsByClassName("product");
+            for (i = 0; i < products.length; i++) {
+                productText = products[i].getElementsByClassName("product-text")[0];
+                txtValue = productText.textContent || productText.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    products[i].style.display = "";
+                } else {
+                    products[i].style.display = "none";
+                }
+            }
+        }
+
+       
+    </script>
+
+    <script>
+        document.querySelectorAll('.product').forEach(item => {
+            item.addEventListener('dragstart', function(event) {
+                const produtoInfo = {
+                    nome: this.querySelector('.product-text').innerText,
+                    valor: this.querySelector('h3').innerText.split(':')[1].trim() // Assumindo que o valor está após ':'
+                };
+                event.dataTransfer.setData('text/plain', JSON.stringify(produtoInfo));
+            });
+        });
+        
+        
+        // Manipular o evento de soltar no destino
+        const dragTarget = document.getElementById('drag-target');
+        dragTarget.addEventListener('dragover', function(event) {
+            event.preventDefault(); // Necessário para permitir o drop
+        });
+        
+        dragTarget.addEventListener('drop', function(event) {
+            event.preventDefault();
+            const data = event.dataTransfer.getData('text/plain');
+            localStorage.setItem('draggedProduct', data); // Salvar o produto arrastado
+            window.location.href = 'formulario.html'; // Redirecionar para a segunda página
+        });
+        
+        </script>
+
+        <script>
+            // Este código assume que todos os seus produtos têm a classe "product"
+            const items = document.querySelectorAll('.product');
+            
+            items.forEach(item => {
+                item.addEventListener('dragstart', function(event) {
+                    const produtoInfo = {
+                        nome: this.querySelector('.product-text').innerText,
+                        // Aqui você ajusta para capturar os ingredientes, se necessário
+                        valor: this.querySelector('h3').innerText
+                    };
+                    event.dataTransfer.setData('text/plain', JSON.stringify(produtoInfo));
+                });
+            });
+            </script>
+
+            <script>
+                // Função para exibir o modal de agendamento
+                function mostrarModalAgendamento() {
+                    document.getElementById('modalAgendamento').style.display = 'flex';
+                }
+            
+                // Função para fechar o modal de agendamento
+                function fecharModalAgendamento() {
+                    document.getElementById('modalAgendamento').style.display = 'none';
+                }
+            
+                // Função para enviar o checklist preenchido para o WhatsApp
+                function enviarParaWhatsApp() {
+                    // Lógica para obter os dados do formulário e gerar a mensagem
+                    var mensagem = "Checklist de Agendamento:\n";
+                    mensagem += "Tipo de Serviço: " + document.getElementById('tipoServico').value + "\n";
+                    mensagem += "Nome do Pet: " + document.getElementById('nomePet').value + "\n";
+                    mensagem += "Idade: " + document.getElementById('idadePet').value + "\n";
+                    mensagem += "Raça: " + document.getElementById('racaPet').value + "\n";
+                    mensagem += "Telefone: " + document.getElementById('pesoPet').value + "\n";
+                    mensagem += "Sexo: " + document.getElementById('sexoPet').value + "\n";
+                    mensagem += "Necessidades Especiais: " + document.getElementById('necessidadesEspeciais').value + "\n";
+                    mensagem += "Tipo de Alimentação: " + document.getElementById('tipoAlimentacao').value + "\n";
+                    mensagem += "Horários das Refeições: " + document.getElementById('horariosRefeicoes').value + "\n";
+                    mensagem += "Medicamentos: " + document.getElementById('medicamentos').value + "\n";
+                    mensagem += "Restrições Alimentares: " + document.getElementById('restricoesAlimentares').value + "\n";
+                    mensagem += "Comportamentos Específicos: " + document.getElementById('comportamentosEspecificos').value + "\n";
+                    mensagem += "Nome do Responsável: " + document.getElementById('nomeResponsavel').value + "\n";
+                    mensagem += "Telefone de Contato: " + document.getElementById('telefoneContato').value + "\n";
+                    mensagem += "Data de Início do Serviço: " + document.getElementById('dataInicio').value + "\n";
+                    mensagem += "Data de Término: " + document.getElementById('dataTermino').value + "\n";
+                    mensagem += "Horários de Atendimento Específicos: " + document.getElementById('horariosAtendimento').value + "\n";
+                    mensagem += "Observações: " + document.getElementById('observacoes').value + "\n";
+                    
+                    // Adicione aqui os outros campos do checklist
+            
+                    // Substitua o número de WhatsApp pelo desejado
+                    var numeroWhatsapp = '5548991265931';
+            
+                    // Montar o link do WhatsApp com a mensagem
+                    var linkWhatsapp = 'https://wa.me/' + numeroWhatsapp + '?text=' + encodeURIComponent(mensagem);
+            
+                    // Abrir a janela do WhatsApp
+                    window.open(linkWhatsapp, '_blank');
+            
+                    // Fechar o modal após enviar para o WhatsApp
+                    fecharModalAgendamento();
+                }
+            
+                // Adicionar um ouvinte de eventos ao botão de agendamento
+                document.getElementById('btnAgendamento').addEventListener('click', mostrarModalAgendamento);
+            
+                // Adicionar um ouvinte de eventos ao formulário de agendamento
+                document.getElementById('formAgendamento').addEventListener('submit', enviarParaWhatsApp);
+            </script>
+            
+
+
+
+            
+            
+</body>
+</html>
